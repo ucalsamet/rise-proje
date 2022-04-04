@@ -8,21 +8,29 @@ import {
   FormControl,
   Typography,
   Box,
-  Grid
+  Grid,
 } from "@mui/material";
 import Add from "@mui/icons-material/Add";
+import {
+  createTheme,
+  responsiveFontSizes,
+  ThemeProvider,
+} from "@mui/material/styles";
 import React, { useState } from "react";
 import { useAddJob } from "../hooks/useAddJob";
+
+let theme = createTheme();
+theme = responsiveFontSizes(theme);
 export default function CreateJob() {
   const { addJob } = useAddJob("jobs");
-  
+
   const [validationJob, setValidationJob] = useState({
     jobValid: false,
     jobValidText: "",
   });
-  
+
   const [validationPriority, setValidationPriority] = useState(false);
-  
+
   const [job, setJob] = useState({
     jobName: "",
     jobPriority: "",
@@ -63,64 +71,66 @@ export default function CreateJob() {
   };
   return (
     <Container>
-      <form onSubmit={handleSubmit}>
-        <Box sx={{ flexGrow: 1, mt: 3 }}>
-          <Typography sx={{ fontWeight: "bold", mb: 2 }} variant="h6">
-            Create New Job
-          </Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={7}>
-              <TextField
-                error={validationJob.jobValid}
-                value={job.jobName}
-                onChange={handleChange("jobName")}
-                fullWidth
-                label="Job Name"
-                variant="outlined"
-                autoComplete="off"
-                helperText={
-                  validationJob.jobValid ? validationJob.jobValidText : ""
-                }
-              />
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <FormControl variant="outlined" fullWidth>
-                <InputLabel>Job Priority</InputLabel>
-
-                <Select
-                  error={validationPriority}
-                  value={job.jobPriority}
-                  onChange={handleChange("jobPriority")}
+      <ThemeProvider theme={theme}>
+        <form onSubmit={handleSubmit}>
+          <Box sx={{ flexGrow: 1, mt: 3 }}>
+            <Typography sx={{ fontWeight: "bold", mb: 2 }} variant="h6">
+              Create New Job
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={7}>
+                <TextField
+                  error={validationJob.jobValid}
+                  value={job.jobName}
+                  onChange={handleChange("jobName")}
                   fullWidth
-                  label="Job Priority"
+                  label="Job Name"
+                  variant="outlined"
+                  autoComplete="off"
+                  helperText={
+                    validationJob.jobValid ? validationJob.jobValidText : ""
+                  }
+                />
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <FormControl variant="outlined" fullWidth>
+                  <InputLabel>Job Priority</InputLabel>
+
+                  <Select
+                    error={validationPriority}
+                    value={job.jobPriority}
+                    onChange={handleChange("jobPriority")}
+                    fullWidth
+                    label="Job Priority"
+                  >
+                    <MenuItem sx={{ color: "#ff1744" }} value={1}>
+                      Urgent
+                    </MenuItem>
+                    <MenuItem sx={{ color: "#ffc400" }} value={2}>
+                      Regular
+                    </MenuItem>
+                    <MenuItem sx={{ color: "#3d5afe" }} value={3}>
+                      Trival
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={4} md={2}>
+                <Button
+                  type="submit"
+                  sx={{ height: 56 }}
+                  size="large"
+                  fullWidth
+                  variant="contained"
                 >
-                  <MenuItem sx={{ color: "#ff1744" }} value={1}>
-                    Urgent
-                  </MenuItem>
-                  <MenuItem sx={{ color: "#ffc400" }} value={2}>
-                    Regular
-                  </MenuItem>
-                  <MenuItem sx={{ color: "#3d5afe" }} value={3}>
-                    Trival
-                  </MenuItem>
-                </Select>
-              </FormControl>
+                  <Add sx={{ mr: 1 }} />
+                  Create
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item xs={4} md={2}>
-              <Button
-                type="submit"
-                sx={{ height: 56, fontSize: 15 }}
-                size="large"
-                fullWidth
-                variant="contained"
-              >
-                <Add sx={{ fontSize: 18, mr: 0.5 }} />
-                Create
-              </Button>
-            </Grid>
-          </Grid>
-        </Box>
-      </form>
+          </Box>
+        </form>
+      </ThemeProvider>
     </Container>
   );
 }

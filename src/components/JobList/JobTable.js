@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import React, { useState, useContext } from "react";
 import {
   Typography,
@@ -9,12 +10,21 @@ import {
   TableRow,
   Paper,
   Fab,
+  Grid,
 } from "@mui/material";
 import { Delete, Create } from "@mui/icons-material";
+import {
+  createTheme,
+  responsiveFontSizes,
+  ThemeProvider,
+} from "@mui/material/styles";
 
 import { JobContext } from "../../contexts/JobContext";
 import DeleteModal from "../modals/DeleteModal";
 import UpdateModal from "../modals/UpdateModal";
+
+let theme = createTheme();
+theme = responsiveFontSizes(theme);
 
 const style = (priority) => {
   if (priority === 1) {
@@ -73,111 +83,122 @@ export default function JobTable({ search, priority }) {
 
   return (
     <TableContainer>
-      <Table>
-        <TableHead sx={{ backgroundColor: "#00bcd4" }}>
-          <TableRow>
-            <TableCell>
-              <Typography
-                sx={{ fontWeight: "bold" }}
-                variant="h6"
-                color="white"
-              >
-                Name
-              </Typography>
-            </TableCell>
-            <TableCell align="left">
-              <Typography
-                sx={{ fontWeight: "bold" }}
-                variant="h6"
-                color="white"
-              >
-                Priority
-              </Typography>
-            </TableCell>
-            <TableCell align="left">
-              <Typography
-                sx={{ fontWeight: "bold" }}
-                variant="h6"
-                color="white"
-              >
-                Action
-              </Typography>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {jobs &&
-            jobs
-              .filter((p) => {
-                if (priority === 0) {
-                  return p;
-                } else {
-                  return p.jobPriority === priority;
-                }
-              })
-              .filter((i) => {
-                if (search === "") {
-                  return i;
-                } else if (
-                  i.jobName.toLowerCase().includes(search.toLowerCase())
-                ) {
-                  return i;
-                }
-              })
-              .map((job) => (
-                <TableRow key={job.id}>
-                  <TableCell component="th" scope="row">
-                    <Typography variant="h6" color="dark">
-                      {job.jobName}
-                    </Typography>
-                  </TableCell>
-                  <TableCell align="left">
-                    <Paper
-                      sx={{
-                        p: 1.2,
-                        textAlign: "center",
-                        width: 50,
-                        backgroundColor: style(job.jobPriority),
-                      }}
-                    >
-                      <Typography variant="inherit" color="white">
-                        {text(job.jobPriority)}
+      <ThemeProvider theme={theme}>
+        <Table>
+          <TableHead sx={{ backgroundColor: "#00bcd4" }}>
+            <TableRow>
+              <TableCell>
+                <Typography
+                  sx={{ fontWeight: "bold" }}
+                  variant="h6"
+                  color="white"
+                >
+                  Name
+                </Typography>
+              </TableCell>
+              <TableCell align="left">
+                <Typography
+                  sx={{ fontWeight: "bold" }}
+                  variant="h6"
+                  color="white"
+                >
+                  Priority
+                </Typography>
+              </TableCell>
+              <TableCell align="left">
+                <Typography
+                  sx={{ fontWeight: "bold" }}
+                  variant="h6"
+                  color="white"
+                >
+                  Action
+                </Typography>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {jobs &&
+              jobs
+                .filter((p) => {
+                  if (priority === 0) {
+                    return p;
+                  } else {
+                    return p.jobPriority === priority;
+                  }
+                })
+                .filter((i) => {
+                  if (search === "") {
+                    return i;
+                  } else if (
+                    i.jobName.toLowerCase().includes(search.toLowerCase())
+                  ) {
+                    return i;
+                  }
+                })
+                .map((job) => (
+                  <TableRow key={job.id}>
+                    <TableCell component="th" scope="row">
+                      <Typography variant="h6" color="dark">
+                        {job.jobName}
                       </Typography>
-                    </Paper>
-                  </TableCell>
-                  <TableCell align="left">
-                    <Fab
-                      size="small"
-                      color="error"
-                      onClick={(e) => {
-                        handleDeleteOpen(e, job.id);
-                      }}
-                    >
-                      <Delete />
-                    </Fab>
-                    <Fab
-                      sx={{ ml: 1 }}
-                      size="small"
-                      color="warning"
-                      onClick={(e) => {
-                        handleUpdateOpen(e, job.id, job.jobName);
-                      }}
-                      aria-label="create"
-                    >
-                      <Create />
-                    </Fab>
-                  </TableCell>
-                </TableRow>
-              ))}
-        </TableBody>
-      </Table>
-      <DeleteModal open={modalDelete} handleClose={handleDeleteClose} id={id} />
-      <UpdateModal
-        open={modalUpdate}
-        handleClose={handleUpdateClose}
-        id={id}
-        jobName={jobName}
-      />
+                    </TableCell>
+                    <TableCell align="left">
+                      <Paper
+                        sx={{
+                          p: 1.2,
+                          textAlign: "center",
+                          width: 50,
+                          backgroundColor: style(job.jobPriority),
+                        }}
+                      >
+                        <Typography variant="inherit" color="white">
+                          {text(job.jobPriority)}
+                        </Typography>
+                      </Paper>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Grid container spacing={1}>
+                        <Grid item>
+                          <Fab
+                            size="small"
+                            color="error"
+                            onClick={(e) => {
+                              handleDeleteOpen(e, job.id);
+                            }}
+                          >
+                            <Delete />
+                          </Fab>
+                        </Grid>
+                        <Grid item>
+                          <Fab
+                            size="small"
+                            color="warning"
+                            onClick={(e) => {
+                              handleUpdateOpen(e, job.id, job.jobName);
+                            }}
+                            aria-label="create"
+                          >
+                            <Create />
+                          </Fab>
+                        </Grid>
+                      </Grid>
+                    </TableCell>
+                  </TableRow>
+                ))}
+          </TableBody>
+        </Table>
+        <DeleteModal
+          open={modalDelete}
+          handleClose={handleDeleteClose}
+          id={id}
+        />
+        <UpdateModal
+          open={modalUpdate}
+          handleClose={handleUpdateClose}
+          id={id}
+          jobName={jobName}
+        />
+      </ThemeProvider>
     </TableContainer>
   );
 }
